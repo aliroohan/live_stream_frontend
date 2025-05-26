@@ -1,0 +1,52 @@
+.controls {
+    margin: 20px 0;
+  }
+  
+  .controls input {
+    padding: 8px;
+    margin-right: 10px;
+  }
+  
+  .controls button {
+    padding: 8px 16px;
+    margin-right: 10px;
+    cursor: pointer;
+  }
+  
+  .controls button:disabled {
+    cursor: not-allowed;
+    opacity: 0.6;
+  }
+  
+  .status {
+    margin: 10px 0;
+    padding: 10px;
+    background-color: #f5f5f5;
+    border-radius: 4px;
+  }
+  
+  .stream-display {
+    margin-top: 20px;
+    position: relative;
+  }
+  
+  .stream-display img {
+    max-width: 100%;
+    height: auto;
+    border: 1px solid #ccc;
+  }
+  
+  .frame-info {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background-color: rgba(0, 0, 0, 0.7);
+    color: white;
+    padding: 10px;
+    border-radius: 5px;
+    font-size: 14px;
+  }
+  
+  .frame-info p {
+    margin: 5px 0;
+  }

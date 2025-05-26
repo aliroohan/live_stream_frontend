@@ -1,0 +1,23 @@
+<div style="padding: 20px;">
+    <h1>RTSP to Image Stream Viewer</h1>
+  
+    <div class="controls">
+      <input type="text" [(ngModel)]="rtspUrl" placeholder="Enter RTSP URL (e.g., rtsp://...)" size="50">
+      <button (click)="startStream()" [disabled]="isLoading">Start Stream</button>
+      <button (click)="stopStream()" [disabled]="isLoading">Stop Stream</button>
+    </div>
+  
+    <div class="status">
+      <p><strong>Status:</strong> {{ status }}</p>
+    </div>
+  
+    <div class="stream-display">
+      <img *ngIf="currentImageSrc" [src]="currentImageSrc" alt="Live Stream Frame">
+      <div *ngIf="currentImageSrc" class="frame-info">
+        <p><strong>Frame:</strong> {{ currentFrameNumber }}</p>
+        <p><strong>Timestamp:</strong> {{ currentTimestamp }}</p>
+      </div>
+      <p *ngIf="!currentImageSrc && hasAttemptedStart && !isLoading">Waiting for stream data or stream stopped...</p>
+      <p *ngIf="isLoading && !currentImageSrc">Connecting/Loading...</p>
+    </div>
+  </div>
