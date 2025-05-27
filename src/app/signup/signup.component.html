@@ -114,7 +114,7 @@
       <!-- Terms Checkbox -->
       <div class="terms-checkbox">
         <input type="checkbox" id="terms" formControlName="terms">
-        <label for="terms">I agree to the <a href="#">Terms & Conditions</a> and <a href="#">Privacy Policy</a></label>
+        <label for="terms">I agree to the <span>Terms & Conditions</span> and <span href="#">Privacy Policy</span></label>
         <div *ngIf="signupForm.get('terms')?.invalid && signupForm.get('terms')?.touched" class="error-message">
           You must agree to the terms and conditions
         </div>

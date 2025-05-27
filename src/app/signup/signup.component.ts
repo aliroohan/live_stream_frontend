@@ -73,7 +73,7 @@ export class SignupComponent {
       this.authService.register(formData).subscribe({
         next: (response: any) => {
           this.isLoading = false;
-          this.successMessage = 'Account created successfully! Please check your email for verification.';
+          this.successMessage = 'Account created successfully!';
           // Optionally redirect to login or verification page
           setTimeout(() => {
             this.router.navigate(['/login']);

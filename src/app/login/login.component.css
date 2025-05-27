@@ -116,36 +116,6 @@
   margin-top: 0.25rem;
 }
 
-.form-options {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  font-size: 0.875rem;
-}
-
-.remember-me {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-}
-
-.remember-me input[type="checkbox"] {
-  width: 1rem;
-  height: 1rem;
-  accent-color: #667eea;
-}
-
-.forgot-password {
-  color: #667eea;
-  text-decoration: none;
-  font-weight: 500;
-  transition: color 0.3s ease;
-}
-
-.forgot-password:hover {
-  color: #764ba2;
-}
-
 .login-btn {
   padding: 0.875rem 1.5rem;
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);

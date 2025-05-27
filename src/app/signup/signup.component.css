@@ -141,14 +141,14 @@
   color: #6b7280;
 }
 
-.terms-checkbox a {
+.terms-checkbox span {
   color: #845eaa;
   text-decoration: none;
   font-weight: 500;
   transition: color 0.3s ease;
 }
 
-.terms-checkbox a:hover {
+.terms-checkbox span:hover {
   color: #845eaa;
 }
 
