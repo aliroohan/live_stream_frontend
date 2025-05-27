@@ -5,70 +5,131 @@
       <p>Join us and start your journey</p>
     </div>
     
-    <form class="signup-form">
-      <div class="form-row">
-        <div class="form-group">
-          <label for="firstName">First Name</label>
-          <input 
-            type="text" 
-            id="firstName" 
-            name="firstName" 
-            placeholder="Enter your first name"
-            required
-          />
-        </div>
+    <!-- Success Message -->
+    <div *ngIf="successMessage" class="alert alert-success">
+      {{ successMessage }}
+    </div>
+    
+    <!-- Error Message -->
+    <div *ngIf="errorMessage" class="alert alert-error">
+      {{ errorMessage }}
+    </div>
+    
+    <form [formGroup]="signupForm" (ngSubmit)="onSubmit()" class="signup-form">
+      <!-- Name Field -->
+      <div class="form-group">
         
-        <div class="form-group">
-          <label for="lastName">Last Name</label>
-          <input 
-            type="text" 
-            id="lastName" 
-            name="lastName" 
-            placeholder="Enter your last name"
-            required
-          />
+        <input 
+          type="text" 
+          id="name" 
+          formControlName="name"
+          placeholder="Enter your full name"
+          [class.error]="signupForm.get('name')?.invalid && signupForm.get('name')?.touched"
+        />
+        <div *ngIf="getFieldError('name')" class="error-message">
+          {{ getFieldError('name') }}
         </div>
       </div>
       
+      <!-- Username Field -->
       <div class="form-group">
-        <label for="email">Email</label>
+        <input 
+          type="text" 
+          id="username" 
+          formControlName="username"
+          placeholder="Choose a username"
+          [class.error]="signupForm.get('username')?.invalid && signupForm.get('username')?.touched"
+        />
+        <div *ngIf="getFieldError('username')" class="error-message">
+          {{ getFieldError('username') }}
+        </div>
+      </div>
+      
+      <!-- Email Field -->
+      <div class="form-group">
         <input 
           type="email" 
           id="email" 
-          name="email" 
+          formControlName="email"
           placeholder="Enter your email"
-          required
+          [class.error]="signupForm.get('email')?.invalid && signupForm.get('email')?.touched"
         />
+        <div *ngIf="getFieldError('email')" class="error-message">
+          {{ getFieldError('email') }}
+        </div>
       </div>
       
+      <!-- Password Field -->
       <div class="form-group">
-        <label for="password">Password</label>
-        <input 
-          type="password" 
-          id="password" 
-          name="password" 
-          placeholder="Create a password"
-          required
-        />
+        <div class="password-input-container">
+          <input 
+            [type]="showPassword ? 'text' : 'password'"
+            id="password" 
+            formControlName="password"
+            placeholder="Create a password"
+            [class.error]="signupForm.get('password')?.invalid && signupForm.get('password')?.touched"
+          />
+          <button 
+            type="button" 
+            class="password-toggle-btn"
+            (click)="togglePasswordVisibility()"
+            tabindex="-1"
+          >
+            <span class="material-icons">
+              {{ showPassword ? 'visibility_off' : 'visibility' }}
+            </span>
+          </button>
+        </div>
+        <div *ngIf="getFieldError('password')" class="error-message">
+          {{ getFieldError('password') }}
+        </div>
       </div>
       
+      <!-- Confirm Password Field -->
       <div class="form-group">
-        <label for="confirmPassword">Confirm Password</label>
-        <input 
-          type="password" 
-          id="confirmPassword" 
-          name="confirmPassword" 
-          placeholder="Confirm your password"
-          required
-        />
+        <div class="password-input-container">
+          <input 
+            [type]="showConfirmPassword ? 'text' : 'password'"
+            id="confirmPassword" 
+            formControlName="confirmPassword"
+            placeholder="Confirm your password"
+            [class.error]="signupForm.get('confirmPassword')?.invalid && signupForm.get('confirmPassword')?.touched"
+          />
+          <button 
+            type="button" 
+            class="password-toggle-btn"
+            (click)="toggleConfirmPasswordVisibility()"
+            tabindex="-1"
+          >
+            <span class="material-icons">
+              {{ showConfirmPassword ? 'visibility_off' : 'visibility' }}
+            </span>
+          </button>
+        </div>
+        <div *ngIf="getFieldError('confirmPassword')" class="error-message">
+          {{ getFieldError('confirmPassword') }}
+        </div>
       </div>
       
+      <!-- Terms Checkbox -->
       <div class="terms-checkbox">
-        <input type="checkbox" id="terms" name="terms" required>
+        <input type="checkbox" id="terms" formControlName="terms">
         <label for="terms">I agree to the <a href="#">Terms & Conditions</a> and <a href="#">Privacy Policy</a></label>
+        <div *ngIf="signupForm.get('terms')?.invalid && signupForm.get('terms')?.touched" class="error-message">
+          You must agree to the terms and conditions
+        </div>
       </div>
       
-      <button type="submit" class="signup-btn">Create Account</button>
+      <!-- Submit Button -->
+      <button 
+        type="submit" 
+        class="signup-btn"
+        [disabled]="isLoading || signupForm.invalid"
+        [class.loading]="isLoading"
+      >
+        <span *ngIf="!isLoading">Create Account</span>
+        <span *ngIf="isLoading">Creating Account...</span>
+      </button>
     </form>
     
     <div class="login-link">

@@ -1,93 +1,43 @@
 <div class="home-container">
   <header class="navbar">
     <div class="nav-brand">
-      <h2>Vivid Gateway</h2>
+      <h2>Action Recognition</h2>
     </div>
     <nav class="nav-links">
-      <a routerLink="/home" class="nav-link active">Home</a>
-      <a href="#features" class="nav-link">Features</a>
-      <a href="#about" class="nav-link">About</a>
       <div class="auth-buttons">
-        <a routerLink="/login" class="btn-login">Login</a>
-        <a routerLink="/signup" class="btn-signup">Sign Up</a>
+        <ng-container *ngIf="!isAuthenticated()">
+          <a routerLink="/login" class="btn-login">Login</a>
+          <a routerLink="/signup" class="btn-signup">Sign Up</a>
+        </ng-container>
+        <ng-container *ngIf="isAuthenticated()">
+          <button (click)="signOut()" class="btn-signout">Sign Out</button>
+        </ng-container>
       </div>
     </nav>
   </header>
 
   <main>
     <section class="hero">
+      <!-- Background animations -->
+      <div class="hero-background">
+        <div class="hero-visual">
+          <div class="geometric-shape shape-1"></div>
+          <div class="geometric-shape shape-2"></div>
+          <div class="geometric-shape shape-3"></div>
+        </div>
+      </div>
+      
+      <!-- Content overlay -->
       <div class="hero-content">
-        <h1 class="hero-title">Welcome to Vivid Gateway</h1>
-        <p class="hero-subtitle">Experience the future of digital innovation with our cutting-edge platform</p>
+        <h1 class="hero-title">Welcome to Action Recognition</h1>
+        <p class="hero-subtitle">
+          Experience the future of digital innovation with our cutting-edge
+          platform
+        </p>
         <div class="hero-buttons">
           <a routerLink="/signup" class="btn-primary">Get Started</a>
-          <a href="#features" class="btn-secondary">Learn More</a>
-        </div>
-      </div>
-      <div class="hero-image">
-        <div class="gradient-circle"></div>
-      </div>
-    </section>
-
-    <section id="features" class="features">
-      <div class="container">
-        <h2 class="section-title">Why Choose Vivid Gateway?</h2>
-        <div class="features-grid">
-          <div class="feature-card">
-            <div class="feature-icon">🚀</div>
-            <h3>Lightning Fast</h3>
-            <p>Experience blazing fast performance with our optimized infrastructure</p>
-          </div>
-          <div class="feature-card">
-            <div class="feature-icon">🔒</div>
-            <h3>Secure</h3>
-            <p>Your data is protected with enterprise-grade security measures</p>
-          </div>
-          <div class="feature-card">
-            <div class="feature-icon">💡</div>
-            <h3>Innovative</h3>
-            <p>Cutting-edge features powered by the latest technology</p>
-          </div>
-          <div class="feature-card">
-            <div class="feature-icon">🌟</div>
-            <h3>User-Friendly</h3>
-            <p>Intuitive interface designed for the best user experience</p>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <section id="about" class="about">
-      <div class="container">
-        <div class="about-content">
-          <div class="about-text">
-            <h2>About Vivid Gateway</h2>
-            <p>We're passionate about creating digital experiences that inspire and empower. Our platform combines innovation with simplicity to deliver solutions that make a difference.</p>
-            <p>Join thousands of users who trust Vivid Gateway for their digital journey.</p>
-            <a routerLink="/signup" class="btn-primary">Join Us Today</a>
-          </div>
-          <div class="about-stats">
-            <div class="stat">
-              <h3>10k+</h3>
-              <p>Active Users</p>
-            </div>
-            <div class="stat">
-              <h3>99.9%</h3>
-              <p>Uptime</p>
-            </div>
-            <div class="stat">
-              <h3>24/7</h3>
-              <p>Support</p>
-            </div>
-          </div>
         </div>
       </div>
     </section>
   </main>
-
-  <footer class="footer">
-    <div class="container">
-      <p>&copy; 2024 Vivid Gateway. All rights reserved.</p>
-    </div>
-  </footer>
 </div>

@@ -1,23 +1,57 @@
-<div style="padding: 20px;">
-    <h1>RTSP to Image Stream Viewer</h1>
-  
-    <div class="controls">
-      <input type="text" [(ngModel)]="rtspUrl" placeholder="Enter RTSP URL (e.g., rtsp://...)" size="50">
-      <button (click)="startStream()" [disabled]="isLoading">Start Stream</button>
-      <button (click)="stopStream()" [disabled]="isLoading">Stop Stream</button>
+<div class="stream-container">
+  <header class="navbar">
+    <div class="nav-brand">
+      <h2>Vivid Gateway</h2>
     </div>
-  
-    <div class="status">
-      <p><strong>Status:</strong> {{ status }}</p>
-    </div>
-  
-    <div class="stream-display">
-      <img *ngIf="currentImageSrc" [src]="currentImageSrc" alt="Live Stream Frame">
-      <div *ngIf="currentImageSrc" class="frame-info">
-        <p><strong>Frame:</strong> {{ currentFrameNumber }}</p>
-        <p><strong>Timestamp:</strong> {{ currentTimestamp }}</p>
+    <nav class="nav-links">
+      <a routerLink="/home" class="nav-link">Home</a>
+      <a routerLink="/stream" class="nav-link active">Live Stream</a>
+      <div class="auth-buttons">
+        <ng-container *ngIf="!isAuthenticated()">
+          <a routerLink="/login" class="btn-login">Login</a>
+          <a routerLink="/signup" class="btn-signup">Sign Up</a>
+        </ng-container>
+        <ng-container *ngIf="isAuthenticated()">
+          <button (click)="signOut()" class="btn-signout">Sign Out</button>
+        </ng-container>
       </div>
-      <p *ngIf="!currentImageSrc && hasAttemptedStart && !isLoading">Waiting for stream data or stream stopped...</p>
-      <p *ngIf="isLoading && !currentImageSrc">Connecting/Loading...</p>
-    </div>
-  </div>
+    </nav>
+  </header>
+
+  <main class="main-content">
+    <section class="stream-hero">
+      <div class="stream-header">
+        <h1 class="stream-title">Live Stream Viewer</h1>
+        <p class="stream-subtitle">Real-time RTSP stream monitoring with advanced frame tracking</p>
+      </div>
+      
+      <div class="status-card">
+        <div class="status-indicator" [class.active]="!isLoading && currentImageSrc" [class.loading]="isLoading">
+          <div class="pulse"></div>
+        </div>
+        <div class="status-info">
+          <h3>Stream Status</h3>
+          <p class="status-text">{{ status }}</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="stream-viewer">
+      <div class="video-container">
+        <div class="video-wrapper" *ngIf="currentImageSrc || isLoading">
+          <img *ngIf="currentImageSrc" [src]="currentImageSrc" alt="Live Stream Frame" class="stream-image">
+          <div *ngIf="isLoading && !currentImageSrc" class="loading-placeholder">
+            <div class="loading-spinner"></div>
+            <p>Connecting to stream...</p>
+          </div>
+          
+        </div>
+        <div *ngIf="!currentImageSrc && !isLoading && hasAttemptedStart" class="no-stream">
+          <div class="no-stream-icon">📡</div>
+          <h3>No Stream Data</h3>
+          <p>Waiting for stream data or stream has stopped</p>
+        </div>
+      </div>
+    </section>
+  </main>
+</div>

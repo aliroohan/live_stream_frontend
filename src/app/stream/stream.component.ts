@@ -1,12 +1,12 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { HttpClient, HttpClientModule, HttpErrorResponse } from '@angular/common/http';
-import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { webSocket, WebSocketSubject, WebSocketSubjectConfig } from 'rxjs/webSocket';
 import { Subscription, timer } from 'rxjs';
 import { catchError, retryWhen, delayWhen, tap } from 'rxjs/operators';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { Router } from '@angular/router';
 
 interface FrameData {
   type: string;
@@ -23,10 +23,10 @@ interface FrameData {
   styleUrl: './stream.component.css'
 })
 export class StreamComponent implements OnInit, OnDestroy {
-  rtspUrl: string = 'rtsp://localhost:8554/mystream'; // Default for testing
+  rtspUrl: string = 'rtsp://localhost:8554/mystream';
   currentImageSrc: any | null = null;
-  status: string = 'Idle';
-  isLoading: boolean = false;
+  status: string = 'Initializing...';
+  isLoading: boolean = true;
   hasAttemptedStart: boolean = false;
   currentFrameNumber: number = 0;
   currentTimestamp: string = '';
@@ -39,16 +39,52 @@ export class StreamComponent implements OnInit, OnDestroy {
 
   // --- Properties for smoother animation ---
   private imageQueue: FrameData[] = [];
-  private targetFps: number = 10; // IMPORTANT: Should match backend's OUTPUT_FRAME_RATE
+  private targetFps: number = 10;
   private frameIntervalMs: number = 1000 / this.targetFps;
   private lastFrameRenderTime: number = 0;
   private animationFrameId: number | null = null;
-  // --- End animation properties ---
 
-  constructor(private http: HttpClient, private sanitizer: DomSanitizer) {}
+  constructor(private http: HttpClient, private router: Router) {}
 
   ngOnInit(): void {
-    this.frameIntervalMs = 1000 / this.targetFps; // Initialize frame interval
+    this.frameIntervalMs = 1000 / this.targetFps;
+    const token = localStorage.getItem('authToken');
+    if (!token) {
+      this.router.navigate(['/login']);
+      return;
+    }
+
+    setTimeout(() => {
+      this.startStream();
+    }, 1000); 
+    setTimeout(() => {
+      this.startStream();
+    }, 1000); 
+    
+  }
+
+  // Check if user is authenticated
+  isAuthenticated(): boolean {
+    return !!localStorage.getItem('authToken');
+  }
+
+  // Sign out method
+  signOut(): void {
+    // Clear all authentication data from localStorage
+    localStorage.removeItem('authToken');
+    localStorage.removeItem('userData');
+    
+    // Stop any ongoing streams and WebSocket connections
+    this.stopRenderLoop();
+    if (this.wsSubscription) {
+      this.wsSubscription.unsubscribe();
+    }
+    if (this.socket$) {
+      this.socket$.complete();
+    }
+    
+    // Redirect to home page
+    this.router.navigate(['/']);
   }
 
   private connectWebSocket(): void {
@@ -180,14 +216,10 @@ export class StreamComponent implements OnInit, OnDestroy {
   }
   // --- End render loop methods ---
 
-  startStream(): void {
-    if (!this.rtspUrl) {
-      alert('Please enter an RTSP URL.');
-      return;
-    }
+  private startStream(): void {
     this.hasAttemptedStart = true;
     this.isLoading = true;
-    this.status = 'Requesting to start stream...';
+    this.status = 'Connecting to stream...';
     this.currentImageSrc = null;
     this.imageQueue = [];
 
@@ -200,56 +232,33 @@ export class StreamComponent implements OnInit, OnDestroy {
 
     this.http.post<{ message: string }>(
       `${this.BACKEND_URL}/api/stream/start-stream`,
-      { cctvUrl: sanitizedUrl },
+      {},
       { headers }
     ).subscribe({
       next: (res) => {
         console.log('Start stream response:', res);
-        this.status = res.message || 'Stream start requested. Connecting...';
+        this.status = res.message || 'Stream started. Connecting to WebSocket...';
         if (!this.socket$ || this.socket$.closed) {
           this.connectWebSocket();
         } else {
           this.startRenderLoop();
           this.isLoading = false;
-          this.status = 'Streaming frames... (re-initiated on existing connection)';
+          this.status = 'Stream active';
         }
       },
       error: (err: HttpErrorResponse) => {
         console.error('Error starting stream:', err);
-        this.status = `Error starting stream: ${err.error?.error || err.message}`;
+        this.status = `Failed to start stream: ${err.error?.error || err.message}`;
         this.isLoading = false;
         this.hasAttemptedStart = false;
         this.stopRenderLoop();
+        
+        // Retry after 5 seconds
+        setTimeout(() => {
+          this.startStream();
+        }, 5000);
       }
     });
-  }
-
-  stopStream(): void {
-    this.isLoading = true; // Set loading true while stopping
-    this.status = 'Requesting to stop stream...';
-
-    this.http.post<{ message: string }>(`${this.BACKEND_URL}/api/stream/stop-stream`, {})
-      .subscribe({
-        next: (res) => {
-          console.log('Stop stream response:', res);
-          this.status = res.message || 'Stream stop requested.';
-          this.stopRenderLoop();
-          this.imageQueue = [];
-          this.currentImageSrc = null;
-          if (this.socket$) {
-            this.socket$.complete(); // Gracefully close WebSocket from client side
-            // this.socket$ = null; // Handled by closeObserver
-          }
-          this.isLoading = false;
-          this.hasAttemptedStart = false;
-        },
-        error: (err: HttpErrorResponse) => {
-          console.error('Error stopping stream:', err);
-          this.status = `Error stopping stream: ${err.error?.error || err.message}`;
-          this.isLoading = false;
-          // Don't reset hasAttemptedStart, stream might still be technically running if API call failed
-        }
-      });
   }
 
   ngOnDestroy(): void {
