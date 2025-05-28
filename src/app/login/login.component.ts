@@ -61,7 +61,7 @@ export class LoginComponent {
           
           // Redirect to dashboard or home page
           setTimeout(() => {
-            this.router.navigate(['/dashboard']); // Change to your desired route
+            this.router.navigate(['/stream']); // Change to your desired route
           }, 1500);
         },
         error: (error) => {
