@@ -6,7 +6,7 @@ import { HttpClient } from '@angular/common/http';
 })
 export class AuthService {
 
-  private baseUrl = 'https://live-stream-backend-gules.vercel.app/api/user';
+  private baseUrl = 'http://localhost:3000/api/user';
 
   constructor(private http:HttpClient) { }
 

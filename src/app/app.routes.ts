@@ -3,6 +3,7 @@ import { HomeComponent } from './home/home.component';
 import { StreamComponent } from './stream/stream.component';
 import { LoginComponent } from './login/login.component';
 import { SignupComponent } from './signup/signup.component';
+import { VideopageComponent } from './videopage/videopage.component';
 
 export const routes: Routes = [
     {
@@ -25,6 +26,10 @@ export const routes: Routes = [
     {
         path: 'signup',
         component: SignupComponent
+    },
+    {
+        path: 'videopage',
+        component: VideopageComponent
     },
     {
         path: '**',

@@ -1,0 +1,77 @@
+<div class="home-container">
+  <header class="navbar">
+    <div class="nav-brand">
+      <h2>Action Recognition</h2>
+    </div>
+    <nav class="nav-links">
+      <div class="auth-buttons">
+        <button class="btn-signout" (click)="signOut()">Sign Out</button>
+      </div>
+    </nav>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div class="hero-background">
+        <div class="hero-visual">
+          <div class="geometric-shape shape-1"></div>
+          <div class="geometric-shape shape-2"></div>
+          <div class="geometric-shape shape-3"></div>
+        </div>
+      </div>
+      <div class="hero-content">
+        <h1 class="hero-title">Live Video & Upload Analysis</h1>
+        <p class="hero-subtitle">
+          Analyze live camera or uploaded video with real-time AI responses.
+        </p>
+        <div class="mode-toggle">
+          <label>
+            <input type="radio" name="mode" value="camera" [(ngModel)]="mode" (change)="onModeChange()"> Camera
+          </label>
+          <label>
+            <input type="radio" name="mode" value="upload" [(ngModel)]="mode" (change)="onModeChange()"> Uploaded Video
+          </label>
+        </div>
+        <div style="    display: flex; justify-content: center;" *ngIf="mode === 'camera'">
+          <video #videoFeed id="videoFeed" autoplay playsinline></video>
+        </div>
+        <canvas #canvas id="canvas" class="hidden"></canvas>
+        <div class="upload-section" *ngIf="mode === 'upload'">
+          <label for="videoUpload" class="upload-label">Upload Video:</label>
+          <div class="custom-upload" 
+               (click)="videoUploadInput.click()"
+               (dragover)="onDragOver($event)"
+               (dragleave)="onDragLeave($event)"
+               (drop)="onDrop($event)"
+               [class.dragover]="isDragOver">
+            <input #videoUploadInput type="file" id="videoUpload" accept="video/*" (change)="onVideoUpload($event)" hidden>
+            <div class="upload-btn-area">
+              <span *ngIf="!uploadedVideoLoaded">Click or drag a video file here</span>
+              <span *ngIf="uploadedVideoLoaded">{{ uploadedFileName }}</span>
+            </div>
+          </div>
+          <video #uploadedVideo id="uploadedVideo" [class.hidden]="!uploadedVideoLoaded" [attr.controls]="null" muted></video>
+          <button class="btn-primary" (click)="processUploadedVideo()" [disabled]="!uploadedVideoLoaded || isUploadingProcessing">Process Uploaded Video</button>
+        
+        </div>
+        <div class="response-area">
+          <label for="responseText">Response:</label><br>
+          <textarea id="responseText" [(ngModel)]="responseText" readonly placeholder="Server response will appear here..."></textarea>
+        </div>
+        <div class="controls" *ngIf="mode === 'camera'">
+          <label for="intervalSelect">Interval between 2 requests:</label>
+          <select id="intervalSelect" [(ngModel)]="intervalMs">
+            <option value="100">100ms</option>
+            <option value="250">250ms</option>
+            <option value="500">500ms</option>
+            <option value="1000">1s</option>
+            <option value="2000">2s</option>
+          </select>
+          <button class="btn-primary" (click)="toggleLive()" [ngClass]="isProcessing ? 'stop' : 'start'">
+            {{ isProcessing ? 'Stop' : 'Start' }}
+          </button>
+        </div>
+      </div>
+    </section>
+  </main>
+</div>
