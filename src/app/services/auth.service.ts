@@ -6,7 +6,7 @@ import { HttpClient } from '@angular/common/http';
 })
 export class AuthService {
 
-  private baseUrl = 'http://localhost:3000/api/user';
+  private baseUrl = 'https://image-forensics-backend.vercel.app/api/user';
 
   constructor(private http:HttpClient) { }
 
